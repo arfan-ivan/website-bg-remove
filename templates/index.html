@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="icon" type="image/png" href="{{ url_for('static', filename='favicon.png') }}">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image Processor</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f9f9f9;
+        }
+        .container {
+            max-width: 500px;
+            margin: auto;
+            text-align: center;
+            background: #fff;
+            padding: 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+        }
+        h1 {
+            color: #333;
+        }
+        select, input[type="file"], button {
+            margin: 10px 0;
+            width: 100%;
+            padding: 10px;
+            box-sizing: border-box;
+            font-size: 16px;
+        }
+        button {
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        #preview {
+            margin-top: 20px;
+            display: none;
+            max-width: 100%;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        #message {
+            margin-top: 20px;
+            font-size: 14px;
+            color: red;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Image Processor^beta</h1>
+        <form action="/process" method="post" enctype="multipart/form-data" onsubmit="return validateForm()">
+            <input type="file" name="image" id="image" accept="image/*" required onchange="showPreview(event)">
+            <br>
+            <label for="task">Select Task:</label>
+            <select name="task" id="task">
+                <option value="background">Remove Background</option>
+                <option value="watermark">Remove Watermark</option>
+                <option value="enhance">Enhance Quality</option>
+            </select>
+            <br>
+            <button type="submit">Process Image</button>
+        </form>
+        <img id="preview" alt="Image Preview">
+        <p id="message"></p>
+    </div>
+    <footer class="footer">
+        <p>&copy; <span id="year"></span> Arfanvn. All Rights Reserved.</p>
+    </footer>
+    
+    <script>
+        document.getElementById("year").textContent = new Date().getFullYear();
+    </script>
+    
+    <style>
+        .footer {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background-color: #222; /* Warna latar */
+            color: white; /* Warna teks */
+            text-align: center;
+            font-size: 12px; /* Ukuran teks kecil */
+            padding: 5px;
+        }
+    </style>
+    <script>
+        function showPreview(event) {
+            const preview = document.getElementById('preview');
+            const file = event.target.files[0];
+
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    preview.src = e.target.result;
+                    preview.style.display = 'block';
+                };
+                reader.readAsDataURL(file);
+            } else {
+                preview.src = '';
+                preview.style.display = 'none';
+            }
+        }
+
+        function validateForm() {
+            const fileInput = document.getElementById('image');
+            const message = document.getElementById('message');
+
+            if (!fileInput.files || !fileInput.files[0]) {
+                message.textContent = 'Please select an image to upload.';
+                return false;
+            }
+
+            message.textContent = ''; // Clear message
+            return true;
+        }
+    </script>
+</body>
+</html>
